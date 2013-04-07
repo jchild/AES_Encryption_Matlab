@@ -1,0 +1,63 @@
+function [ output ] = AESencrypt( text,key )  
+
+%AESencrypt
+%Usage:     output = AESencrypt(
+%
+%key:       input 128-bit key
+%text:      input plain text
+%output:    output ciphertext
+
+key = uint8(reshape(hex2dec(key),4,4));
+word = key_exp(key);
+% dec2hex(word)
+keyPos = 1;
+text = hex2dec(text);
+a = uint8(size(text)/4);
+state = reshape(text , 4 , 4);
+fourWords = (4);
+for i = 1:16
+    fourWords(i) = word(i);
+end
+fourWords = reshape(fourWords,4,4);
+size(fourWords)
+state = bitxor(state , fourWords);
+disp('key');
+  dec2hex(state)
+   
+for i = 1:9
+    for x = 1:4
+        
+    fourWords = (word(:,(1:4) + 4*i))';
+    fourWords = reshape(fourWords,4,4);
+   state =  subByte(state);
+   disp('subbyte')
+   dec2hex(state)
+   state = shiftRows(state);
+   disp('shiftrow')
+   dec2hex(state)
+   state = mixCol(state);
+   disp('mixcol')
+   dec2hex(state)
+   state = bitxor(state, fourWords);
+   disp('key');
+   dec2hex(state)
+   
+ 
+    
+end
+
+ fourWords = (word(:,41:44))';
+ fourWords = reshape(fourWords,4,4);  
+ state = subByte(state);
+ state = shiftRows(state);
+ state = bitxor(state, fourWords);
+ 
+ 
+ text = reshape (state, 1, 16);
+ 
+ output = dec2hex(text);
+ 
+ 
+
+end
+

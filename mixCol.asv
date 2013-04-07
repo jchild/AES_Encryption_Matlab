@@ -1,0 +1,88 @@
+function [ output ] = mixCol( state)
+%UNTITLED4 Summary of this function goes here
+%   Detailed explanation goes here
+
+
+% shift = [ 2, 3, 1, 1; 1, 2, 3, 1; 1, 1, 2, 3; 3, 1, 1, 2];
+% 
+% for i = 1:4
+% %     temp =  bitxor( bitxor( bitxor( (bitshift(state(1,i), 1)) , (bitxor((state(2,i)*2),state(2,i)))) , (state(3,i)*1)) , (state(4,i)*1));
+% % %     temp = int2str(temp)
+% % %     state(1,i) = bin2dec(temp)
+% %     state(1,i) = temp;
+% %     temp =  bitxor( bitxor( bitxor( (state(1,i)*1) , (bitshift(state(2,i), 1))) , bitxor((state(3,i)*2), state(3,i))) , (state(4,i)*1));
+% % %     temp = int2str(temp);
+% % %     state(2,i) = bin2dec(temp);
+% %     state(2,i) = temp;
+% %     temp =  bitxor( bitxor( bitxor( (state(1,i)*1) , (state(2,i)*1)) , (state(3,i)*2)) , (bitxor((state(4,i)*2), state(4,i))));
+% % %     temp = int2str(temp);
+% % %     state(3,i) = bin2dec(temp);
+% %     state(3,i) = temp;
+% %     temp =  bitxor( bitxor( bitxor( (bitxor((state(1,i)*2), state(1,i))) , (state(2,i)*1)) , (state(3,i)*1)) , (bitshift(state(4,i), 1)));
+% % %     temp = int2str(temp);
+% % %     state(4,i) = bin2dec(temp);
+% %     state(4,i) = temp;
+%     temp1 = uint8( state (1,i));
+%     temp2 = uint8(state (2,i));
+%     temp3 = uint8(state (3,i));
+%     temp4 = uint8(state (4,i));
+% %     shift1 = temp1;
+% %     shift2 = temp2;
+% %     shift3 = temp3;
+% %     shift4 = temp4;
+% %     multby31 = temp1;
+% %     multby32 = temp2;
+% %     multby33 = temp3;
+% %     multby34 = temp4;
+% %     
+% %      if (bitget(temp1,5)==1)
+%         
+%         shift1 = bitxor((bitsll(temp1,1)),27);
+%         multby31 = bitxor(bitxor((bitsll(temp1,1)),27),temp1);
+% %      end
+% %      if(bitget(temp2,5)==1)
+%         shift2 = bitxor((bitsll(temp2,1)),27);
+%         multby32 = bitxor(bitxor((bitsll(temp2,1)),27),temp2);
+% %      end
+% %      if(bitget(temp3,5)==1)
+%          shift3 = bitxor((bitsll(temp3,1)),27);
+%         multby33 = bitxor(bitxor((bitsll(temp3,1)),27),temp3);
+% %      end
+% %      if(bitget(temp4,5)==1)
+%         shift4 = bitxor((bitsll(temp4,1)),27);
+%         multby34 = bitxor(bitxor((bitsll(temp1,4)),27),temp4);
+% %      end
+% 
+%     state(1,i) =  bitxor( bitxor( bitxor(  shift1, multby32) , temp3) , temp4);
+%     state(2,i) =  bitxor( bitxor( bitxor( (temp1) , shift2) , multby33), temp4);
+%     state(3,i) =  bitxor( bitxor( bitxor( temp1 , temp2) , shift3) , multby34);
+%     state(4,i) =  bitxor( bitxor( bitxor( multby31 , temp2) , temp3) , shift4);
+% end
+
+
+for col = 1:4
+	output_block(1,col) = bitxor(bytesubstitution(input_block(1,col), ...
+		galoistable2), ...
+		bitxor(bytesubstitution(input_block(2,col), galoistable3), ...
+		bitxor(input_block(3,col),input_block(4,col))));
+	
+	output_block(2,col) = bitxor(input_block(1,col), ...
+		bitxor(bytesubstitution(input_block(2,col), galoistable2), ...
+		bitxor(bytesubstitution(input_block(3,col), galoistable3), ...
+		input_block(4,col))));
+	
+	output_block(3,col) = bitxor(input_block(1,col), ...
+		bitxor(input_block(2,col), ...
+		bitxor(bytesubstitution(input_block(3,col), galoistable2), ...
+		bytesubstitution(input_block(4,col), galoistable3))));
+	
+	output_block(4,col) = bitxor(bytesubstitution(input_block(1,col), ...
+		galoistable3), ...
+		bitxor(input_block(2,col), ...
+		bitxor(input_block(3,col),bytesubstitution(input_block(4,col), ...
+		galoistable2))));
+end
+
+output = state;
+
+end

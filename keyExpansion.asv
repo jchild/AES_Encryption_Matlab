@@ -1,0 +1,200 @@
+function output = keyExpansion( key )
+
+rcon = {
+    '8d' '01' '02' '04' '08' '10' '20' '40' '80' '1b' '36' '6c' 'd8' 'ab' '4d' '9a'...
+    '2f' '5e' 'bc' '63' 'c6' '97' '35' '6a' 'd4' 'b3' '7d' 'fa' 'ef' 'c5' '91' '39'...
+    '72' 'e4' 'd3' 'bd' '61' 'c2' '9f' '25' '4a' '94' '33' '66' 'cc' '83' '1d' '3a'...
+    '74' 'e8' 'cb' '8d' '01' '02' '04' '08' '10' '20' '40' '80' '1b' '36' '6c' 'd8'...
+    'ab' '4d' '9a' '2f' '5e' 'bc' '63' 'c6' '97' '35' '6a' 'd4' 'b3' '7d' 'fa' 'ef'...
+    'c5' '91' '39' '72' 'e4' 'd3' 'bd' '61' 'c2' '9f' '25' '4a' '94' '33' '66' 'cc'...
+    '83' '1d' '3a' '74' 'e8' 'cb' '8d' '01' '02' '04' '08' '10' '20' '40' '80' '1b'...
+    '36' '6c' 'd8' 'ab' '4d' '9a' '2f' '5e' 'bc' '63' 'c6' '97' '35' '6a' 'd4' 'b3'...
+    '7d' 'fa' 'ef' 'c5' '91' '39' '72' 'e4' 'd3' 'bd' '61' 'c2' '9f' '25' '4a' '94'...
+    '33' '66' 'cc' '83' '1d' '3a' '74' 'e8' 'cb' '8d' '01' '02' '04' '08' '10' '20'...
+    '40' '80' '1b' '36' '6c' 'd8' 'ab' '4d' '9a' '2f' '5e' 'bc' '63' 'c6' '97' '35'...
+    '6a' 'd4' 'b3' '7d' 'fa' 'ef' 'c5' '91' '39' '72' 'e4' 'd3' 'bd' '61' 'c2' '9f'...
+    '25' '4a' '94' '33' '66' 'cc' '83' '1d' '3a' '74' 'e8' 'cb' '8d' '01' '02' '04'...
+    '08' '10' '20' '40' '80' '1b' '36' '6c' 'd8' 'ab' '4d' '9a' '2f' '5e' 'bc' '63'...
+    'c6' '97' '35' '6a' 'd4' 'b3' '7d' 'fa' 'ef' 'c5' '91' '39' '72' 'e4' 'd3' 'bd'...
+    '61' 'c2' '9f' '25' '4a' '94' '33' '66' 'cc' '83' '1d' '3a' '74' 'e8' 'cb' '8d'};
+
+
+
+rcon = uint8(reshape(hex2dec(rcon),size(rcon)));
+key = reshape(key, size(key));
+
+w(1,1:4) = [key(1), key(2), key(3), key(4)];
+w(2,1:4) = [key(5), key(6), key(7), key(8)];
+w(3,1:4) = [key(9), key(10), key(11), key(12)];
+w(4,1:4) = [key(13), key(14), key(15), key(16)];
+
+lastkey = zeros(4,44);
+ for i = 4:4 
+    
+    temp = w(:,1)
+    if mod (i, 4) == 0
+        temp = rotWord (temp); % have to write this function still i believe%
+        temp = subByte (temp); % sub_bytes might be just subByte but have to investigate how much different it is in key expansion%
+        temp
+        r = rcon ((i /4));
+        temp = bitxor (temp, r);
+    end
+    temps = w((i-3):4)
+    temps = reshape(temps,2,2)
+    taco = bitxor (temps, temp)
+    taco = reshape(taco,1,4);
+    w(:,(i-3)) = taco
+ end
+ for i = 8:8
+    i
+    w(7)
+    temp = w(:,2)
+    if mod (i, 4) == 0
+        temp = rotWord (temp); % have to write this function still i believe%
+        temp = subByte (temp); % sub_bytes might be just subByte but have to investigate how much different it is in key expansion%
+        r = rcon ((i /4));
+        temp = bitxor (temp, r);
+    end
+    temps = w((i-3):4)
+    temps = reshape(temps,2,2)
+    taco = bitxor (temps, temp)
+    taco = reshape(taco,1,4);
+    w(:,(i-3)) = taco
+ end
+ for i = 12:12
+    i
+    temp = w(:,3)
+    if mod (i, 4) == 0
+        temp = rotWord (temp); % have to write this function still i believe%
+        temp = subByte (temp); % sub_bytes might be just subByte but have to investigate how much different it is in key expansion%
+        r = rcon ((i /4));
+        temp = bitxor (temp, r);
+    end
+    temps = w((i-3):4)
+    temps = reshape(temps,2,2)
+    taco = bitxor (temps, temp)
+    taco = reshape(taco,1,4);
+    w(:,(i-3)) = taco
+end
+ for i =16:16
+    i
+    temp = w(:,4)
+    if mod (i, 4) == 0
+        temp = rotWord (temp); % have to write this function still i believe%
+        temp = subByte (temp); % sub_bytes might be just subByte but have to investigate how much different it is in key expansion%
+        r = rcon ((i /4));
+        temp = bitxor (temp, r);
+    end
+    temps = w((i-3):4)
+    temps = reshape(temps,2,2)
+    taco = bitxor (temps, temp)
+    taco = reshape(taco,1,4);
+    w(:,(i-3)) = taco
+ end
+ for i = 20:20
+    i
+    temp = w(:,5)
+    if mod (i, 4) == 0
+        temp = rotWord (temp); % have to write this function still i believe%
+        temp = subByte (temp); % sub_bytes might be just subByte but have to investigate how much different it is in key expansion%
+        r = rcon ((i /4));
+        temp = bitxor (temp, r);
+    end
+    temps = w((i-3):4)
+    temps = reshape(temps,2,2)
+    taco = bitxor (temps, temp)
+    taco = reshape(taco,1,4);
+    w(:,(i-3)) = taco
+ end
+ for i =24:24
+    i
+    temp = w(:,6)
+    if mod (i, 4) == 0
+        temp = rotWord (temp); % have to write this function still i believe%
+        temp = subByte (temp); % sub_bytes might be just subByte but have to investigate how much different it is in key expansion%
+        r = rcon ((i /4));
+        temp = bitxor (temp, r);
+    end
+   temps = w((i-3):4)
+    temps = reshape(temps,2,2)
+    taco = bitxor (temps, temp)
+    taco = reshape(taco,1,4);
+    w(:,(i-3)) = taco
+ end
+ for i =28:28
+    i
+    temp = w(:,7)
+    if mod (i, 4) == 0
+        temp = rotWord (temp); % have to write this function still i believe%
+        temp = subByte (temp); % sub_bytes might be just subByte but have to investigate how much different it is in key expansion%
+        r = rcon ((i /4));
+        temp = bitxor (temp, r);
+    end
+    temps = w((i-3):4)
+    temps = reshape(temps,2,2)
+    taco = bitxor (temps, temp)
+    taco = reshape(taco,1,4);
+    w(:,(i-3)) = taco
+ end
+
+ for i =32:32
+    i
+    temp = w(:,8)
+    if mod (i, 4) == 0
+        temp = rotWord (temp); % have to write this function still i believe%
+        temp = subByte (temp); % sub_bytes might be just subByte but have to investigate how much different it is in key expansion%
+        r = rcon ((i /4));
+        temp = bitxor (temp, r);
+    end
+    temps = w((i-3):4)
+    temps = reshape(temps,2,2)
+    taco = bitxor (temps, temp)
+    taco = reshape(taco,1,4);
+    w(:,(i-3)) = taco
+ end
+ for i =36:36
+    i
+    temp = w(:,9)
+    if mod (i, 4) == 0
+        temp = rotWord (temp); % have to write this function still i believe%
+        temp = subByte (temp); % sub_bytes might be just subByte but have to investigate how much different it is in key expansion%
+        r = rcon ((i /4));
+        temp = bitxor (temp, r);
+    end
+    temps = w((i-3):4)
+    temps = reshape(temps,2,2)
+    taco = bitxor (temps, temp)
+    taco = reshape(taco,1,4);
+    w(:,(i-3)) = taco
+ end
+ for i =40:40 
+    i
+    temp = w(:,10)
+    if mod (i, 4) == 0
+        temp = rotWord (temp); % have to write this function still i believe%
+        temp = subByte (temp); % sub_bytes might be just subByte but have to investigate how much different it is in key expansion%
+        r = rcon ((i /4));
+        temp = bitxor (temp, r);
+    end
+    temps = w((i-3):4)
+    temps = reshape(temps,2,2)
+    taco = bitxor (temps, temp)
+    taco = reshape(taco,1,4);
+    w(:,(i-3)) = taco
+ end
+ for i = 44:44 
+    i
+    temp = w(:,11)
+    if mod (i, 4) == 0
+        temp = rotWord (temp); % have to write this function still i believe%
+        temp = subByte (temp); % sub_bytes might be just subByte but have to investigate how much different it is in key expansion%
+        r = rcon ((i /4));
+        temp = bitxor (temp, r);
+    end
+    temps = w((i-3):4)
+    temps = reshape(temps,2,2)
+    taco = bitxor (temps, temp)
+    taco = reshape(taco,1,4);
+    w(:,(i-3)) = taco
+ end
+ output = w;
